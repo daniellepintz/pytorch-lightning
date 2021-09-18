@@ -19,6 +19,7 @@ import torch
 
 from pytorch_lightning import Callback, LightningDataModule, Trainer
 from pytorch_lightning.loggers import TestTubeLogger
+from pytorch_lightning.trainer.connectors.logger_connector import LoggerConnector
 from tests.deprecated_api import _soft_unimport_module
 from tests.helpers import BoringModel
 from tests.helpers.datamodules import MNISTDataModule
@@ -224,3 +225,13 @@ def test_v1_7_0_deprecate_add_get_queue(tmpdir):
 
     with pytest.deprecated_call(match=r"`LightningModule.get_from_queue` method was deprecated in v1.5"):
         trainer.fit(model)
+
+
+def test_v1_7_0_trainer_log_gpu_memory(tmpdir):
+    with pytest.deprecated_call(
+        match="Setting `log_gpu_memory` with the trainer flag is deprecated and will be removed in v1.7."
+    ):
+        trainer = Trainer(log_gpu_memory="min_max")
+    with pytest.deprecated_call(match="The property `LoggerConnector.gpus_metrics` was deprecated in v1.5"):
+        lg = LoggerConnector(trainer)
+        _ = lg.gpus_metrics
